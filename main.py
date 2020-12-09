@@ -19,13 +19,13 @@ def teste():
     sigma_1 = ((rand.randint(0, 10), rand.randint(0, 5)), (rand.randint(0, 10), rand.randint(0, 5)))
     sigma_2 = ((rand.randint(0, 10), rand.randint(0, 5)), (rand.randint(0, 1), rand.randint(0, 5)))
 
-    for t in range(5000):
+    for t in range(500):
         x = num.random.multivariate_normal(mu_1, sigma_1)
         y = num.random.multivariate_normal(mu_1, sigma_1)
         points_x.append(x)
         points_y.append(y)
 
-    for b in range(5000):
+    for b in range(500):
         x_2 = num.random.multivariate_normal(mu_2, sigma_2, tol=1e-6)
         y_2 = num.random.multivariate_normal(mu_2, sigma_2, tol=1e-6)
         points_x_2.append(x_2)
@@ -35,7 +35,7 @@ def teste():
     for t in range(10):
         teste12 = changing(database)
         if t == 1:
-            write_to_file(teste12, None, None, None, "1st")
+            write_to_file(teste12, [], [], [], "1st")
 
 
 def plot(points1, points2, points3, points4):
@@ -63,8 +63,10 @@ def changing(dataset):
     alpha = 10e-7
 
     for x in dataset:
-        distance_r1_x = math.sqrt(((r1[0] - x[0]) ** 2) + ((r1[1] - x[1]) ** 2))
-        distance_r2_x = math.sqrt(((r2[0] - x[0]) ** 2) + ((r2[1] - x[1]) ** 2))
+        # distance_r1_x = math.sqrt(((r1[0] - x[0]) ** 2) + ((r1[1] - x[1]) ** 2))
+        distance_r1_x = math.hypot((r1[0] - x[0]), (r1[1] - x[1]))
+        # distance_r2_x = math.sqrt(((r2[0] - x[0]) ** 2) + ((r2[1] - x[1]) ** 2))
+        distance_r2_x = math.hypot((r2[0] - x[0]), (r2[1] - x[1]))
 
         if distance_r1_x > distance_r2_x:
             r1[0] = (1 - alpha) * r1[0] + alpha * x[0]
