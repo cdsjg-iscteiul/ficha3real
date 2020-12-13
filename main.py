@@ -15,7 +15,7 @@ def teste():
     sigma_1 = ((rand.randint(0, 10), rand.randint(0, 5)), (rand.randint(0, 10), rand.randint(0, 5)))
     sigma_2 = ((rand.randint(0, 10), rand.randint(0, 5)), (rand.randint(0, 1), rand.randint(0, 5)))
 
-    for t in range(100):
+    for t in range(1000):
         point_set1 = num.random.multivariate_normal(mu_1, sigma_1)
         point_set2 = num.random.multivariate_normal(mu_2, sigma_2)
 
@@ -35,10 +35,12 @@ def teste():
 
 def plot(points):
     fig = plt.figure()
-    ax = fig.add_subplot(111)
-    x = points[:, 0]
-    y = points[:, 1]
-
+    ax = fig.add_subplot(1, 1, 1)
+    x = []
+    y = []
+    for point in points:
+        x.append(point[0])
+        y.append(point[1])
     ax.scatter(x, y, color='r')
     plt.show()
 
@@ -81,6 +83,7 @@ def changing(dataset):
         x += 1
 
     print("SAI DA CENA")
+    print(len(result_data))
     return result_data
 
 
