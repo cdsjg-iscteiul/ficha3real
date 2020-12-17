@@ -41,10 +41,11 @@ def teste():
         # if t == 1:
         # plotted = write_to_file(test12, [], "1st")
 
-        average = clustering(database)
+        average = new_cluster(database)
+
         while len(average) > 2:
-            print(len(average))
-            average = clustering(average)
+            average = new_cluster(average)
+
         plot_begin(average)
 
 
@@ -100,7 +101,6 @@ def plot_begin(points_r1):
     for x in points_r1:
         x_s_r1.append(x[0])
         y_s_r1.append(x[1])
-
     ax.scatter(x_s_r1, y_s_r1, color='b', label="dataset")
     ax.legend()
 
@@ -129,19 +129,37 @@ def clustering(dataset):
         new_y = num.average([current[1], prox[1]])
         average_points.append([new_x, new_y])
         if len(average_points) == len(dataset) // 2:
-            print("ENTREI CRL")
             running = False
-    print(str(average_points))
+    return average_points
+
+
+def new_cluster(dataset):
+    average_points = []
+    copy = [[0, 0]]
+
+    for x in dataset:
+        close = closest_point(dataset, x)
+        new_x = num.average([x[0], close[0]])
+        new_y = num.average([x[1], close[1]])
+        new_point = [new_x, new_y]
+        copy.append(close)
+        copy.append(x)
+        average_points.append(new_point)
+        list = num.where(dataset == x[0])
+
+    print(len(copy))
     return average_points
 
 
 def closest_point(dataset, point):
-    closest = []
-
+    closest = [[0, 0], 0]
     for x in dataset:
-
-
-    return  closest
+        distance = math.sqrt(((point[0] - x[0]) ** 2) + ((point[1] - x[1]) ** 2))
+        dist = closest[1]
+        if dist == 0 or distance < dist:
+            closest.clear()
+            closest = [point, distance]
+    return closest[0]
 
 
 def changing(dataset, r1, r2, alpha):
