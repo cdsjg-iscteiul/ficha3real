@@ -131,7 +131,17 @@ def clustering(dataset):
         if len(average_points) == len(dataset) // 2:
             print("ENTREI CRL")
             running = False
+    print(str(average_points))
     return average_points
+
+
+def closest_point(dataset, point):
+    closest = []
+
+    for x in dataset:
+
+
+    return  closest
 
 
 def changing(dataset, r1, r2, alpha):
