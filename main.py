@@ -1,6 +1,5 @@
 import math
 import random as rand
-from itertools import cycle
 
 import numpy as num
 import matplotlib.pyplot as plt
@@ -29,24 +28,17 @@ def teste():
     database = write_to_file(points_set1, points_set2, "points")
     plot_begin(database)
     for t in range(2):
-        # r1 = rand.choice(database)
-        # print("VALOR DO R1:   " + str(r1))
-        # r2 = rand.choice(database)
-        # print("VALOR DO R2:   " + str(r2))
-        # alpha = 10e-7
-        # test12 = changing(database, r1, r2, alpha)
-        # test12 = new_change(database, r1, r2, alpha)
-        # values_r1_r2.append(test12)
-        # print("VALOR DOS R:   " + str(values_r1_r2))
-        # if t == 1:
-        # plotted = write_to_file(test12, [], "1st")
-
-        average = new_cluster(database)
-
-        while len(average) > 2:
-            average = new_cluster(average)
-
-        plot_begin(average)
+        r1 = rand.choice(database)
+        print("VALOR DO R1:   " + str(r1))
+        r2 = rand.choice(database)
+        print("VALOR DO R2:   " + str(r2))
+        alpha = 10e-7
+        test12 = changing(database, r1, r2, alpha)
+        test12 = new_change(database, r1, r2, alpha)
+        values_r1_r2.append(test12)
+        print("VALOR DOS R:   " + str(values_r1_r2))
+        if t == 1:
+            plotted = write_to_file(test12, [], "1st")
 
 
 # deviation = num.std(values_r1_r2)
@@ -103,9 +95,6 @@ def plot_begin(points_r1):
         y_s_r1.append(x[1])
     ax.scatter(x_s_r1, y_s_r1, color='b', label="dataset")
     ax.legend()
-
-    plt.xlim(-15, 10)
-    plt.ylim(-10, 10)
     plt.show()
 
 
@@ -118,36 +107,42 @@ def write_to_file(points_1, points_2, name):
     return all_points
 
 
-def clustering(dataset):
-    average_points = []
-    running = True
-    ciclo = cycle(dataset)
-    prox = next(ciclo)
-    while running:
-        current, prox = prox, next(ciclo)
-        new_x = num.average([current[0], prox[0]])
-        new_y = num.average([current[1], prox[1]])
-        average_points.append([new_x, new_y])
-        if len(average_points) == len(dataset) // 2:
-            running = False
-    return average_points
+def average_cluster(dataset):
+    average = new_cluster(dataset)
+
+    while len(average) > 2:
+        average = new_cluster(average)
+        print(average)
+
+    plot_begin(average)
 
 
 def new_cluster(dataset):
     average_points = []
-    copy = [[0, 0]]
+    passed_points = [[0, 0]]
+    stop = False
 
     for x in dataset:
         close = closest_point(dataset, x)
-        new_x = num.average([x[0], close[0]])
-        new_y = num.average([x[1], close[1]])
-        new_point = [new_x, new_y]
-        copy.append(close)
-        copy.append(x)
-        average_points.append(new_point)
-        list = num.where(dataset == x[0])
+        for xx in passed_points:
+            cond = num.any(num.in1d(x, xx))
+            if not cond:
+                if len(passed_points) == 1:
+                    passed_points.clear()
+                passed_points.append(x)
+                passed_points.append(close)
+                new_x = num.average(x[0] + close[0])
+                new_y = num.average(x[1] + close[1])
+                average_points.append([new_x, new_y])
 
-    print(len(copy))
+                if len(passed_points) >= len(dataset):
+                    print("PASSEI")
+                    stop = True
+                    break
+
+        if stop:
+            break
+
     return average_points
 
 
