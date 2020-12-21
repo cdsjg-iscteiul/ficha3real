@@ -30,12 +30,12 @@ def run():
     values_r = []
     close_r1 = []
     close_r2 = []
-    for x in range(30):
+    for x in range(2):
         rand.seed(2)
         r1 = rand.choice(database)
         r2 = rand.choice(database)
         alpha = 10e-7
-        for y in range(10):
+        for y in range(2):
             if y == 1:
                 write_to_file([close_r1 + close_r2], "1st")
             for g in database:
@@ -175,7 +175,7 @@ def plot_begin(points_r1):
 
 def write_to_file(points_1, name):
     all_points = points_1
-
+    open(str(name) + ".txt", 'w').close()
     f = open(str(name) + ".txt", "w")
     f.write(' '.join(map(str, all_points)))
 
