@@ -5,44 +5,50 @@ import numpy as num
 import matplotlib.pyplot as plt
 import time
 
-numb_points = 1000
-
-seed = time.time()
+seed = 1611664462.5855956
 print(seed)
-rand.seed(1611664462.5855956)
+rand.seed(seed)
 
 n_fig = 1
 
 
+# 1
 def load_data():
-    data = num.loadtxt("./TwoDistributionsMixed.txt", delimiter=" ")
-    full = [data[10000:], data[:10000]]
-    values_x = []
-    values_y = []
-    ddaata = []
+    global n_fig
+    pontos = []
+    mean1 = [3, 3]
+    cov1 = [[1, 0], [0, 1]]
+    mean2 = [-3, -3]
+    cov2 = [[2, 0], [0, 5]]
 
-    for x in range(5000):
-        values_x.append(full[1][0][x])
-        values_y.append(full[1][1][x])
+    size = 5000
+    x0, y0 = num.random.multivariate_normal(mean1, cov1, size).T
+    x1, y1 = num.random.multivariate_normal(mean2, cov2, size).T
 
-    for g in range(len(values_y)):
-        ddaata.append([values_x[g], values_y[g]])
+    x = num.concatenate((x0, x1))
+    y = num.concatenate((y0, y1))
 
-    plt.plot(values_x, values_y, 'x')
+    for i in range(len(x)):
+        pontos.append([x[i], y[i]])
+
+    plt.plot(x, y, 'x')
+    plt.legend(['Figure ' + str(n_fig)])
+    plt.savefig(str(n_fig))
     plt.show()
+    n_fig += 1
 
-    return ddaata
+    return pontos
 
 
+# 2
 def run_new():
     global n_fig
     points = load_data()
-    times = [10, 50, 100]
+    times = [10]
     alpha = 10 ** (-4)
-    r1_and_r2 = [[[], [], [], []]] * 4
+    r1_and_r2 = [[[], [], [], []]] * len(times)
 
     for p in range(30):
-        print(p)
         for y in times:
             r1 = rand.choice(points[:int(len(points) / 2)])
             r2 = rand.choice(points[int(len(points) / 2):])
@@ -105,17 +111,20 @@ def run_new():
                 plt.plot(x_r2, y_r2, 'x', color="yellow")
                 plt.axis('equal')
                 plt.legend(['Figure ' + str(n_fig)])
+                plt.savefig(str(n_fig))
                 n_fig += 1
                 plt.show()
 
-    for gg in range(len(r1_and_r2) - 1):
+    for gg in range(len(r1_and_r2)):
+        print("goejgoegoejgo")
         plot_normal(r1_and_r2[gg], times[gg])
 
 
+# 2.1
 def new_run_2():
     global n_fig
     points = load_data()
-    times = [10, 50, 100]
+    times = [10]
     alpha = 10 ** (-4)
 
     r1_and_r2 = [[[], [], [], []]] * len(times)
@@ -139,19 +148,19 @@ def new_run_2():
                     distance_r2_x = math.sqrt(((r2[0] - g[0]) ** 2) + ((r2[1] - g[1]) ** 2))
 
                     if distance_r1_x < distance_r2_x:
-                        d_x += (g[0] - r1[0])
-                        d_y += (g[1] - r1[1])
+                        d_x += (g[0] - r1[0]) * 0.00001
+                        d_y += (g[1] - r1[1]) * 0.00001
+                        r1_.append([d_x, d_y])
 
                     if distance_r1_x > distance_r2_x:
-                        d_x_2 += (g[0] - r2[0])
-                        d_y_2 += (g[1] - r2[1])
+                        d_x_2 += (g[0] - r2[0]) * 0.00001
+                        d_y_2 += (g[1] - r2[1]) * 0.00001
+                        r2_.append([d_x_2, d_y_2])
 
                 r1[0] += (alpha / len(points)) * d_x
                 r1[1] += (alpha / len(points)) * d_y
                 r2[0] += (alpha / len(points)) * d_x_2
                 r2[1] += (alpha / len(points)) * d_y_2
-                r1_.append(r1)
-                r2_.append(r2)
 
             r1_and_r2[times.index(y)][0].append(r1[0])
             r1_and_r2[times.index(y)][1].append(r1[1])
@@ -195,6 +204,7 @@ def new_run_2():
                 plt.plot(x_r2, y_r2, 'x', color="yellow")
                 plt.axis('equal')
                 plt.legend(['Figure ' + str(n_fig)])
+                plt.savefig(str(n_fig))
                 n_fig += 1
                 plt.show()
 
@@ -204,6 +214,7 @@ def new_run_2():
 
 def plot_normal(points, times):
     global n_fig
+    print("Oi")
     fig, ax = plt.subplots(nrows=2, ncols=2)
     ax0, ax1, ax2, ax3 = ax.flatten()
     ax0.boxplot(points[0], vert=True)
@@ -217,9 +228,11 @@ def plot_normal(points, times):
     fig.tight_layout()
     plt.legend(['Figure ' + str(n_fig)])
     n_fig += 1
+    plt.savefig(str(n_fig))
     plt.show()
 
 
+# 4
 def average():
     global n_fig
     points = load_data()
@@ -243,6 +256,7 @@ def average():
     plt.plot(points[1][0], points[1][1], 'x', color="red")
     plt.axis('equal')
     plt.legend(['Figure ' + str(n_fig)])
+    plt.savefig(str(n_fig))
     n_fig += 1
     plt.show()
 
@@ -297,6 +311,6 @@ def new_cluster(dataset):
     return average_points
 
 
-# run_new()
-# new_run_2()
+run_new()
+new_run_2()
 average()
